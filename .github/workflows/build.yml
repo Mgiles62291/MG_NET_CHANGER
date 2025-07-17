@@ -1,0 +1,51 @@
+name: Build & Package Network‑Profile‑Switcher
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  build-win:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+
+      - name: Install deps
+        run: pip install pyinstaller -r requirements.txt
+
+      - name: Build EXE
+        run: |
+          pyinstaller ^
+            --onefile --noconsole ^
+            --add-data "profiles.json;." ^
+            network_profile_switcher.py
+
+      - name: Upload artefact (Win)
+        uses: actions/upload-artifact@v4
+        with:
+          name: NetworkProfileSwitcher-Windows
+          path: dist/network_profile_switcher.exe
+
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+
+      - name: Install deps
+        run: pip install pyinstaller -r requirements.txt
+
+      - name: Build app
+        run: |
+          pyinstaller \
+            --onefile --windowed \
+            --add-data "profiles.json:." \
+            network_profile_switcher.py
+
+      - name: Upload artefact (macOS)
+        uses: actions/upload-artifact@v4
+        with:
+          name: NetworkProfileSwitcher-macOS
+          path: dist/network_profile_switcher
