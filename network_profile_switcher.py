@@ -85,6 +85,32 @@ def apply_profile(adapter, profile):
             messagebox.showerror("Command failed", f"Command: {c}\n\n{result.stderr.strip()}")
             break
 
+def export_example_csv():
+    path = filedialog.asksaveasfilename(
+        defaultextension=".csv",
+        filetypes=[("CSV files", "*.csv")],
+        title="Export Example CSV"
+    )
+    if not path:
+        return
+    headers = ["ProfileName", "IP", "Subnet", "Gateway", "DNS1", "DNS2"]
+    example_row = {
+        "ProfileName": "OfficeLAN",
+        "IP": "192.168.1.100",
+        "Subnet": "255.255.255.0",
+        "Gateway": "192.168.1.1",
+        "DNS1": "8.8.8.8",
+        "DNS2": "1.1.1.1"
+    }
+    try:
+        with open(path, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=headers)
+            writer.writeheader()
+            writer.writerow(example_row)
+        messagebox.showinfo("Exported", f"Example CSV saved to:\n{path}")
+    except Exception as e:
+        messagebox.showerror("Export failed", str(e))
+
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -114,6 +140,7 @@ class App(tk.Tk):
 
         ttk.Button(self, text="Apply", command=self.apply_selected).grid(row=3, column=0, columnspan=3, sticky="ew", padx=2, pady=4)
         ttk.Button(self, text="Import CSV", command=self.import_csv).grid(row=4, column=0, columnspan=3, sticky="ew", padx=2)
+        ttk.Button(self, text="Export Example CSV", command=export_example_csv).grid(row=5, column=0, columnspan=3, sticky="ew", padx=2, pady=2)
 
     def refresh_list(self):
         self.listbox.delete(0, tk.END)
