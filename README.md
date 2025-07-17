@@ -1,15 +1,21 @@
-# Network Profile Switcher
+# NetMotive IP Switcher
 
-A lightweight Tkinter GUI for saving and applying multiple IP / subnet / gateway
-profiles on Windows or macOS. Profiles live in `profiles.json` and can be bulk‑imported
-from a CSV.
+A lightweight cross-platform GUI tool to manage and switch between multiple static IP configurations.
 
-## Quick start
+## Features
+- View and select active network adapters
+- Create, edit, delete static IP profiles
+- Apply profiles to interfaces (requires admin)
+- Import/export from CSV
+- Clean modern UI with application icon
+
+## Build Instructions (Windows)
+Install dependencies and build executable with icon:
+
 ```bash
-pip install -r requirements.txt
-python network_profile_switcher.py
+pip install pyinstaller psutil
+pyinstaller --onefile --windowed --icon=icon.ico netmotive_ip_switcher.py
 ```
 
-## Continuous builds
-Every push to the **main** branch triggers GitHub Actions to build ready‑to‑run
-binaries for Windows (EXE) and macOS. Check the *Actions* tab after you push.
+## Usage
+Launch the `.exe` as Administrator to apply adapter changes.
