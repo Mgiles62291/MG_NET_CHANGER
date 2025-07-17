@@ -1,16 +1,8 @@
 #!/usr/bin/env python3
 """
-NetMotive IP Switcher (Auto‑Elevating)
--------------------------------------
-Cross‑platform (Windows/macOS) Tkinter GUI that lets you store multiple static IP
-profiles and apply them to a chosen adapter.
-
-Features:
-* Auto-elevates on Windows (UAC), warns on macOS if not using sudo
-* Load/save IP profiles
-* Apply static IP config to network adapter
-* Import from CSV
-* Export sample CSV or current profiles
+NetMotive IP Switcher (Auto-Elevating)
+--------------------------------------
+Tkinter GUI for managing multiple static IP profiles and applying them to a selected adapter.
 """
 
 import os
@@ -149,7 +141,19 @@ class App(tk.Tk):
         self.adapter_var = tk.StringVar()
         App.profile_list = load_profiles()
         self.selected_profile_index = None
+        self.create_menu()
         self.create_widgets()
+
+    def create_menu(self):
+        menu_bar = tk.Menu(self)
+        file_menu = tk.Menu(menu_bar, tearoff=0)
+        file_menu.add_command(label="Import CSV", command=self.import_csv)
+        file_menu.add_command(label="Export Example CSV", command=export_example_csv)
+        file_menu.add_command(label="Export Current Profiles", command=export_profiles_csv)
+        file_menu.add_separator()
+        file_menu.add_command(label="Exit", command=self.quit)
+        menu_bar.add_cascade(label="File", menu=file_menu)
+        self.config(menu=menu_bar)
 
     def create_widgets(self):
         adapters = list_adapters()
@@ -168,10 +172,7 @@ class App(tk.Tk):
         ttk.Button(self, text="Edit", command=self.edit_profile).grid(row=2, column=1, sticky="ew", padx=2)
         ttk.Button(self, text="Delete", command=self.delete_profile).grid(row=2, column=2, sticky="ew", padx=2)
 
-        ttk.Button(self, text="Apply", command=self.apply_selected).grid(row=3, column=0, columnspan=3, sticky="ew", padx=2, pady=4)
-        ttk.Button(self, text="Import CSV", command=self.import_csv).grid(row=4, column=0, columnspan=3, sticky="ew", padx=2)
-        ttk.Button(self, text="Export Example CSV", command=export_example_csv).grid(row=5, column=0, columnspan=3, sticky="ew", padx=2, pady=2)
-        ttk.Button(self, text="Export Current Profiles", command=export_profiles_csv).grid(row=6, column=0, columnspan=3, sticky="ew", padx=2, pady=2)
+        ttk.Button(self, text="Apply", command=self.apply_selected).grid(row=3, column=0, columnspan=3, sticky="ew", padx=2, pady=6)
 
     def refresh_list(self):
         self.listbox.delete(0, tk.END)
@@ -218,7 +219,7 @@ class App(tk.Tk):
             self.refresh_list()
             messagebox.showinfo("Import", "Profiles imported successfully.")
         except Exception as e:
-            messagebox.showerror("Error", f"Failed to import CSV:\n{e}")
+            messagebox.showerror("Error", f"Failed to import CSV:\\n{e}")
 
 class ProfileDialog(tk.Toplevel):
     def __init__(self, master, title, data=None):
