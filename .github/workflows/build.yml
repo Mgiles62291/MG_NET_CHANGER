@@ -1,29 +1,36 @@
-name: Build & Package Network Profile Switcher
+name: Build NetMotive IP Switcher
+
 on:
   push:
-    branches: [main]          # any commit to main triggers the build
+    branches: [main]
 
 jobs:
-  build_windows:              # ✅ valid ID
+  build-windows:
     runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install pyinstaller psutil
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller psutil
 
-      - name: Build Windows EXE
-        run: pyinstaller --onefile --noconsole --add-data "profiles.json;." network_profile_switcher.py
+      - name: Build EXE with icon
+        run: |
+          pyinstaller --onefile --windowed --add-data "icon.ico;." netmotive_ip_switcher.py
 
-      - name: Upload Windows artifact
+      - name: Upload EXE artifact
         uses: actions/upload-artifact@v4
         with:
-          name: NetworkProfileSwitcher-Windows
-          path: dist/network_profile_switcher.exe
+          name: NetMotive-IP-Switcher-EXE
+          path: dist/netmotive_ip_switcher.exe
 
   build_macos:                # ✅ valid ID
     runs-on: macos-latest
