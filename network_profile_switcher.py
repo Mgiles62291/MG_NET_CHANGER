@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
 """
-Network Profile Switcher (Auto‑Elevating)
-----------------------------------------
+NetMotive IP Switcher (Auto‑Elevating)
+-------------------------------------
 Cross‑platform (Windows/macOS) Tkinter GUI that lets you store multiple static IP
-profiles and apply them to a chosen adapter. This version auto‑elevates itself on
-Windows using UAC and refuses to run (with a warning) when not executed under
-`sudo` on macOS.
+profiles and apply them to a chosen adapter.
+
+Features:
+* Auto-elevates on Windows (UAC), warns on macOS if not using sudo
+* Load/save IP profiles
+* Apply static IP config to network adapter
+* Import from CSV
+* Export sample CSV or current profiles
 """
 
 import os
@@ -111,13 +116,38 @@ def export_example_csv():
     except Exception as e:
         messagebox.showerror("Export failed", str(e))
 
+def export_profiles_csv():
+    if not App.profile_list:
+        messagebox.showinfo("No Profiles", "There are no profiles to export.")
+        return
+
+    path = filedialog.asksaveasfilename(
+        defaultextension=".csv",
+        filetypes=[("CSV files", "*.csv")],
+        title="Export Profiles to CSV"
+    )
+    if not path:
+        return
+    headers = ["ProfileName", "IP", "Subnet", "Gateway", "DNS1", "DNS2"]
+    try:
+        with open(path, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=headers)
+            writer.writeheader()
+            for row in App.profile_list:
+                writer.writerow(row)
+        messagebox.showinfo("Export Complete", f"Profiles exported to:\n{path}")
+    except Exception as e:
+        messagebox.showerror("Export Failed", str(e))
+
 class App(tk.Tk):
+    profile_list = []
+
     def __init__(self):
         super().__init__()
-        self.title("Network Profile Switcher")
+        self.title("NetMotive IP Switcher")
         self.resizable(False, False)
         self.adapter_var = tk.StringVar()
-        self.profile_list = load_profiles()
+        App.profile_list = load_profiles()
         self.selected_profile_index = None
         self.create_widgets()
 
@@ -141,6 +171,7 @@ class App(tk.Tk):
         ttk.Button(self, text="Apply", command=self.apply_selected).grid(row=3, column=0, columnspan=3, sticky="ew", padx=2, pady=4)
         ttk.Button(self, text="Import CSV", command=self.import_csv).grid(row=4, column=0, columnspan=3, sticky="ew", padx=2)
         ttk.Button(self, text="Export Example CSV", command=export_example_csv).grid(row=5, column=0, columnspan=3, sticky="ew", padx=2, pady=2)
+        ttk.Button(self, text="Export Current Profiles", command=export_profiles_csv).grid(row=6, column=0, columnspan=3, sticky="ew", padx=2, pady=2)
 
     def refresh_list(self):
         self.listbox.delete(0, tk.END)
