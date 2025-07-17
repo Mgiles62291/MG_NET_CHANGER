@@ -1,10 +1,10 @@
-name: Build & Package Network Profile Switcher
+name: Build & Package Network Profile Switcher
 on:
   push:
-    branches: [ main ]     # every push to main triggers the build
+    branches: [main]          # any commit to main triggers the build
 
 jobs:
-  build‑windows:
+  build_windows:              # ✅ valid ID
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,7 +17,6 @@ jobs:
         run: pip install pyinstaller psutil
 
       - name: Build Windows EXE
-        # one‑line command avoids the PowerShell ^ issue
         run: pyinstaller --onefile --noconsole --add-data "profiles.json;." network_profile_switcher.py
 
       - name: Upload Windows artifact
@@ -26,7 +25,7 @@ jobs:
           name: NetworkProfileSwitcher-Windows
           path: dist/network_profile_switcher.exe
 
-  build‑macos:
+  build_macos:                # ✅ valid ID
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
