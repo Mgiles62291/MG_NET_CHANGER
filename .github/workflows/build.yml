@@ -12,12 +12,13 @@ jobs:
         with: { python-version: "3.11" }
       - name: Install deps
         run: pip install pyinstaller -r requirements.txt
-      - name: Build EXE
-        run: |
-          pyinstaller ^
-            --onefile --noconsole ^
-            --add-data "profiles.json;." ^
-            network_profile_switcher.py
+    - name: Build EXE
+  shell: cmd
+  run: |
+    pyinstaller ^
+      --onefile --noconsole ^
+      --add-data "profiles.json;." ^
+      network_profile_switcher.py
       - name: Upload artefact (Win)
         uses: actions/upload-artifact@v4
         with:
