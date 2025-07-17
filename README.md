@@ -10,10 +10,6 @@ pip install -r requirements.txt
 python network_profile_switcher.py
 ```
 
-## Build binaries
-Tag a commit to trigger GitHub Actions and get platform executables.
-
-```bash
-git tag -a v1.0.0 -m "First packaged release"
-git push origin v1.0.0
-```
+## Continuous builds
+Every push to the **main** branch triggers GitHub Actions to build ready‑to‑run
+binaries for Windows (EXE) and macOS. Check the *Actions* tab after you push.
