@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Network Profile Switcher (Auto‑Elevating)
 ----------------------------------------
@@ -19,7 +18,7 @@ Dependencies
 ~~~~~~~~~~~~
     pip install psutil
 
-
+Author: ChatGPT (o3) – 2025‑07‑17
 """
 
 from __future__ import annotations
