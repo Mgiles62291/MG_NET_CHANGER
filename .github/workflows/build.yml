@@ -1,45 +1,47 @@
-name: Build & Package Network‑Profile‑Switcher
+name: Build & Package Network Profile Switcher
 on:
   push:
-    branches: [ main ]
+    branches: [ main ]     # every push to main triggers the build
 
 jobs:
-  build-win:
+  build‑windows:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
-        with: { python-version: "3.11" }
-      - name: Install deps
-        run: pip install pyinstaller -r requirements.txt
-    - name: Build EXE
-  shell: cmd
-  run: |
-    pyinstaller ^
-      --onefile --noconsole ^
-      --add-data "profiles.json;." ^
-      network_profile_switcher.py
-      - name: Upload artefact (Win)
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install pyinstaller psutil
+
+      - name: Build Windows EXE
+        # one‑line command avoids the PowerShell ^ issue
+        run: pyinstaller --onefile --noconsole --add-data "profiles.json;." network_profile_switcher.py
+
+      - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
         with:
           name: NetworkProfileSwitcher-Windows
           path: dist/network_profile_switcher.exe
 
-  build-mac:
+  build‑macos:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
-        with: { python-version: "3.11" }
-      - name: Install deps
-        run: pip install pyinstaller -r requirements.txt
-      - name: Build app
-        run: |
-          pyinstaller \
-            --onefile --windowed \
-            --add-data "profiles.json:." \
-            network_profile_switcher.py
-      - name: Upload artefact (macOS)
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install pyinstaller psutil
+
+      - name: Build macOS binary
+        run: pyinstaller --onefile --windowed --add-data "profiles.json:." network_profile_switcher.py
+
+      - name: Upload macOS artifact
         uses: actions/upload-artifact@v4
         with:
           name: NetworkProfileSwitcher-macOS
